@@ -476,5 +476,5 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 API/appsettings.json
-API/datingapp.db-shm
-API/datingapp.db-wal
+API/bikesocial.db-shm
+API/bikesocial.db-wal
