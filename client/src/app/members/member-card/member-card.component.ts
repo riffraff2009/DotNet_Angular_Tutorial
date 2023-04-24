@@ -1,5 +1,7 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { Member } from 'src/app/_models/member';
+import { MembersService } from 'src/app/_services/members.service';
 
 @Component({
   selector: 'app-member-card',
@@ -9,10 +11,16 @@ import { Member } from 'src/app/_models/member';
 export class MemberCardComponent implements OnInit{
   @Input() member: Member | undefined;
 
-  constructor(){}
+  constructor(private memberService: MembersService, private toastr: ToastrService){}
   
   ngOnInit(): void {
     
+  }
+
+  addFollow(member: Member){
+    this.memberService.addFollow(member.userName).subscribe({
+      next: ()=> this.toastr.success('You have followed ' + member.knownAs)
+    })
   }
 
 }

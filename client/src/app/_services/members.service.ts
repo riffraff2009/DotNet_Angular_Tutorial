@@ -116,4 +116,13 @@ export class MembersService {
     return this.http.delete(this.baseUrl + 'users/delete-photo/' + photoId);
   }
 
+  addFollow(username: string){
+    return this.http.post(this.baseUrl + 'follows/'+ username, {});
+  }
+
+  getFollows(predicate: string, pageNumber: number, pageSize: number ){
+    let params = this.getPaginationHeaders(pageNumber,pageSize);
+    params = params.append('predicate', predicate);
+    return this.getPaginatedResult<Member[]>(this.baseUrl + 'follows', params);
+  }
 }
