@@ -38,11 +38,6 @@ namespace API.Data
             .SingleOrDefaultAsync(u => u.UserName == username);
         }
 
-        public async Task<bool> SaveAllAsync()
-        {
-            return await _context.SaveChangesAsync() > 0;
-        }
-
         public void Update(AppUser user)
         {
             _context.Entry(user).State = EntityState.Modified;
@@ -53,7 +48,14 @@ namespace API.Data
             var query = _context.Users.AsQueryable();
 
             query = query.Where(u => u.UserName != userParams.CurrentUsername);
-            query = query.Where(u=> u.Gender == userParams.Gender);
+            if (userParams.Gender != "All")
+            {
+                query = query.Where(u => u.Gender == userParams.Gender);
+            }
+            else
+            {
+                query = query.Where(u => u.Gender != string.Empty && u.Gender != null);
+            }
 
             var minDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MaxAge - 1));
             var maxDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MinAge));
@@ -65,10 +67,10 @@ namespace API.Data
                 _ => query.OrderByDescending(u => u.LastActive)
             };
 
-        return await PagedList<MemberDto>.CreateAsync(
-            query.AsNoTracking().ProjectTo<MemberDto>(_mapper.ConfigurationProvider), 
-            userParams.PageNumber, 
-            userParams.PageSize);
+            return await PagedList<MemberDto>.CreateAsync(
+                query.AsNoTracking().ProjectTo<MemberDto>(_mapper.ConfigurationProvider),
+                userParams.PageNumber,
+                userParams.PageSize);
 
 
         }
@@ -79,6 +81,13 @@ namespace API.Data
             .Where(x => x.UserName == username)
             .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
             .SingleOrDefaultAsync();
+        }
+
+        public async Task<string> GetUserGender(string username)
+        {
+            return await _context.Users
+                .Where(x => x.UserName == username)
+                .Select(x => x.Gender).FirstOrDefaultAsync();
         }
     }
 }

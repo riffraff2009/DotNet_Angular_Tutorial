@@ -13,26 +13,26 @@ namespace API.Controllers
 {
     public class FollowsController : BaseAPIController
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IFollowsRepository _followsRepository;
-        public FollowsController(IUserRepository userRepository, IFollowsRepository followsRepository)
+        private readonly IUnitOfWork _uow;
+      
+        public FollowsController(IUnitOfWork uow)
         {
-            _followsRepository = followsRepository;
-            _userRepository = userRepository;       
+            _uow = uow;
+             
         }
 
         [HttpPost("{username}")]
         public async Task<ActionResult> AddFollow (string username)
         {
             var sourceUserId = User.GetUserId();
-            var followedUser = await _userRepository.GetUserByUsernameAsync(username);
-            var sourceUser = await _followsRepository.GetUserWithFollows(sourceUserId);
+            var followedUser = await _uow.UserRepository.GetUserByUsernameAsync(username);
+            var sourceUser = await _uow.FollowsRepository.GetUserWithFollows(sourceUserId);
 
             if(followedUser == null) return NotFound();
 
             if(sourceUser.UserName == username) return BadRequest("You cannot follow yourself");
 
-            var userFollow = await _followsRepository.GetUserFollows(sourceUserId, followedUser.Id);
+            var userFollow = await _uow.FollowsRepository.GetUserFollows(sourceUserId, followedUser.Id);
 
             if (userFollow!= null) return BadRequest("You already follow this user");
 
@@ -44,7 +44,7 @@ namespace API.Controllers
 
             sourceUser.FollowedUsers.Add(userFollow);
 
-            if (await _userRepository.SaveAllAsync()) return Ok();
+            if (await _uow.Complete()) return Ok();
 
             return BadRequest("Failed to follow user"); 
         }
@@ -53,7 +53,7 @@ namespace API.Controllers
         public async Task<ActionResult<PagedList<FollowDto>>> GetUserFollows([FromQuery]FollowsParams followsParams)
         {
             followsParams.UserId = User.GetUserId();
-            var users = await _followsRepository.GetUserFollows(followsParams);
+            var users = await _uow.FollowsRepository.GetUserFollows(followsParams);
             Response.AddpaginationHeader(new PaginationHeader(
                 users.CurrentPage, 
                 users.PageSize, 

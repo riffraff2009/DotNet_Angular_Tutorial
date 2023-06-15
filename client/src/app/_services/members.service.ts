@@ -55,9 +55,7 @@ export class MembersService {
 
     params = params.append('minAge', userParams.minAge);
     params = params.append('maxAge', userParams.maxAge);
-    if (userParams.gender[1] != 'all') {
-      params = params.append('gender', userParams.gender);
-    }
+    params = params.append('gender', userParams.gender);
     params = params.append('orderBy', userParams.orderBy);
 
     console.log(params);
