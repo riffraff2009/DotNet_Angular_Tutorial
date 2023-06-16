@@ -7,7 +7,7 @@ app = "bikesocial"
 primary_region = "lhr"
 
 [build]
-  image = "RiffRaff2009/bikesocial:latest"
+  image = "riffraff2009/bikesocial:latest"
 
 [env]
   ASPNETCORE_URLS="http://+:8080"
