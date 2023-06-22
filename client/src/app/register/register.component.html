@@ -4,13 +4,12 @@
     <div class="mb-3">
         <label style="margin-right: 10px;">I am a: </label>
         <label class="form-check-label">
-            <input type="radio" class="form-check-input" value="female" formControlName="gender">Female
+            <input type="radio" class="form-check-input" value="female" formControlName="gender">Woman
         </label>
         <label class="form-check-label">
-            <input type="radio" class="form-check-input ms-3" value="male" formControlName="gender">Male
+            <input type="radio" class="form-check-input ms-3" value="male" formControlName="gender">Man
         </label>
         <br>
-        <label style="margin-right: 10px;">Looking for: </label>
     </div>
     <app-text-input [formControl]="$any(registerForm.controls['username'])" 
         [label]="'Username'"></app-text-input>
