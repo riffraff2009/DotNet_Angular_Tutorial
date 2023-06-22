@@ -48,13 +48,13 @@ namespace API.Data
             var query = _context.Users.AsQueryable();
 
             query = query.Where(u => u.UserName != userParams.CurrentUsername);
-            if (userParams.Gender != "All")
+            if (userParams.Gender != "all")
             {
                 query = query.Where(u => u.Gender == userParams.Gender);
             }
             else
             {
-                query = query.Where(u => u.Gender != string.Empty && u.Gender != null);
+                query = query.Where(u => u.Gender == "male" || u.Gender == "female");
             }
 
             var minDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MaxAge - 1));
