@@ -22,7 +22,7 @@ export class MemberCardComponent implements OnInit{
   }
 
   addFollow(member: Member){
-    this.memberService.addFollow(member.userName).subscribe({
+    this.memberService.addFollow(member.UserName).subscribe({
       next: ()=> this.toastr.success('You have followed ' + member.knownAs)
     })
   }
